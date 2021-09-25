@@ -12,7 +12,7 @@ class http_endpoint:
     async def rtasks(self, request):
         resp = []
         for task in self.parent.tasks:
-            resp.append({"name":task.name, "time":task.time})
+            resp.append(task.__dict__)
         return web.Response(text=json.dumps(resp))
     async def wtasks(self, request):
         name = request.query.get("name")
@@ -22,6 +22,6 @@ class http_endpoint:
             return web.Response(status=422, text="400 bad arg")
         if name == "": name = "unnamed"
         if tim == 0.0: tim = time.time()
-        self.parent.tasks.append(alarm.alarm(tim, name))
-        self.rtasks(request)
-        return web.Response(text="done")
+        new = alarm.alarm(tim, name)
+        self.parent.tasks.append(new)
+        return web.Response(text=str(new.__dict__))

@@ -4,6 +4,4 @@ class alarm:
         self.time = time_
         self.name = alarm_
     def check(self):
-        if self.time >= time.time():
-            return True
-        return False
+        return self.time >= time.time()
