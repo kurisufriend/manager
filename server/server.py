@@ -6,6 +6,8 @@ import alarm
 import http_server
 import asyncio
 from aiohttp import web
+import msg
+import json
 
 class server:
     def __init__(self, address, port):
@@ -27,14 +29,14 @@ class server:
         het = threading.Thread(target=self.launch_http_server, args=(runner,))
         het.start()
 
-        self.tasks.append(alarm.alarm(time.time() + 30))
+        # self.tasks.append(alarm.alarm(time.time() + 30))
 
         while True:
             time.sleep(10)
             for task in self.tasks:
                 if task.check():
                     for c in self.clients:
-                        c.sock.sendall("STA".encode("ASCII"))
+                        c.sock.sendall(msg.msg("task", json.dumps(task.__dict__)))
     def handle_connections(self):
         while True:
             (client_sock, address) = self.sock.accept()
